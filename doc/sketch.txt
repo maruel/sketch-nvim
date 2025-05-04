@@ -1,0 +1,51 @@
+*sketch.txt*  A Neovim plugin for sketch.dev integration
+
+==============================================================================
+CONTENTS                                                      *sketch-contents*
+
+    1. Introduction ....................................... |sketch-introduction|
+    2. Installation ...................................... |sketch-installation|
+    3. Usage ............................................. |sketch-usage|
+    4. License ........................................... |sketch-license|
+
+==============================================================================
+1. INTRODUCTION                                         *sketch-introduction*
+
+This plugin integrates the sketch.dev CLI tool with Neovim, allowing you to
+interact with sketch.dev directly from your editor.
+
+==============================================================================
+2. INSTALLATION                                         *sketch-installation*
+
+Requires:
+  - Neovim 0.5.0 or newer
+  - sketch CLI tool installed (https://sketch.dev)
+
+Using your favorite plugin manager:
+
+With packer.nvim: >
+    use 'maruel/sketch-nvim'
+<
+
+With vim-plug: >
+    Plug 'maruel/sketch-nvim'
+<
+
+==============================================================================
+3. USAGE                                                *sketch-usage*
+
+To use the plugin, run the `:Sketch` command followed by your prompt: >
+    
+    :Sketch Write a function that calculates the Fibonacci sequence
+<
+
+This will execute `sketch -open=false -one-shot -prompt <your_prompt>` and
+display the results in a new buffer.
+
+==============================================================================
+4. LICENSE                                              *sketch-license*
+
+This plugin is licensed under the Apache License, Version 2.0.
+
+==============================================================================
+vim:tw=78:ts=8:ft=help:norl:

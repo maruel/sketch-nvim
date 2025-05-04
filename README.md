@@ -2,5 +2,35 @@
 
 Neovim LUA plugin to integrate [sketch.dev](http://sketch.dev).
 
-The plugins provides the command `:Sketch <your_prompt>` which calls `sketch -open=false -one-shot -prompt
-<your_prompt>`
+The plugin provides the command `:Sketch <your_prompt>` which calls `sketch -open=false -one-shot -prompt <your_prompt>`
+
+## Installation
+
+### Requirements
+
+- Neovim 0.5.0 or newer
+- [sketch.dev](http://sketch.dev) CLI tool installed
+
+### Using packer.nvim
+
+```lua
+use 'maruel/sketch-nvim'
+```
+
+### Using vim-plug
+
+```vim
+Plug 'maruel/sketch-nvim'
+```
+
+## Usage
+
+```vim
+:Sketch Write a function that calculates the Fibonacci sequence
+```
+
+This will execute the sketch command and display the results in a new buffer.
+
+## License
+
+Apache License, Version 2.0
