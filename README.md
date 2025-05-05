@@ -11,16 +11,21 @@ The plugin provides the command `:Sketch <your_prompt>` which calls `sketch -ope
 - Neovim 0.5.0 or newer
 - [sketch.dev](http://sketch.dev) CLI tool installed
 
-### Using packer.nvim
+### Using LazyVim
 
 ```lua
-use 'maruel/sketch-nvim'
+{
+  "maruel/sketch-nvim",
+  cmd = "Sketch",
+}
 ```
 
-### Using vim-plug
+### Manual Installation
 
-```vim
-Plug 'maruel/sketch-nvim'
+Clone the repository into your Neovim plugins directory:
+
+```bash
+git clone https://github.com/maruel/sketch-nvim.git ~/.local/share/nvim/site/pack/plugins/start/sketch-nvim
 ```
 
 ## Usage
