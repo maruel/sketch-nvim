@@ -20,12 +20,10 @@ end
 
 local function append_text_to_buffer(buf, text)
 	if text then
-		-- local lines = vim.api.nvim_buf_get_lines(buf, 0, -1, false)
+		-- Append the output at the end of the buffer.
+		-- TODO: If the buffer doesn't end with a new line, the last line is updated.
 		local new_lines = vim.split(text, '\n')
-		-- vim.api.nvim_buf_set_lines(buf, #lines, -1, false, lines)
 		vim.api.nvim_buf_set_lines(buf, -1, -1, false, new_lines)
-		--vim.api.nvim_buf_set_lines(buf, 3, -1, false, data)
-		-- vim.api.nvim_buf_set_lines(buf, -1, -1, true, { data })
 	end
 end
 
