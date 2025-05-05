@@ -64,25 +64,26 @@ function M.run_sketch(prompt)
 	--
 	local cmd = { "sketch", "-open=false", "-one-shot", "-prompt", prompt, }
 	vim.system(cmd, {
-		stdout = function(_, data)
-			if data then
-				--vim.api.nvim_buf_set_lines(buf, 3, -1, false, data)
-				vim.api.nvim_buf_set_lines(buf, -1, -1, true, { data })
-			end
-		end,
-		on_stderr = function(_, data)
-			if data then
-				--vim.api.nvim_buf_set_lines(buf, 3, -1, false, data)
-				vim.api.nvim_buf_set_lines(buf, -1, -1, true, { data })
-				vim.api.nvim_buf_set_lines(buf, 3, -1, false, data)
-			end
-		end,
-		on_exit = function(_, code)
+			stdout = vim.schedule_wrap(function(_, data)
+				if data then
+					--vim.api.nvim_buf_set_lines(buf, 3, -1, false, data)
+					vim.api.nvim_buf_set_lines(buf, -1, -1, true, { data })
+				end
+			end),
+			stderr = vim.schedule_wrap(function(_, data)
+				if data then
+					--vim.api.nvim_buf_set_lines(buf, 3, -1, false, data)
+					vim.api.nvim_buf_set_lines(buf, -1, -1, true, { data })
+					vim.api.nvim_buf_set_lines(buf, 3, -1, false, data)
+				end
+			end),
+		},
+		function(out)
+			local code = out.code
 			local status = code == 0 and 'SUCCESS' or 'FAILED (exit code: ' .. code .. ')'
 			-- vim.api.nvim_buf_set_lines(buf, 0, 2, false, { 'Sketch execution ' .. status, '', 'Prompt: ' .. prompt })
 			vim.api.nvim_buf_set_lines(buf, -1, -1, true, { 'Sketch execution ' .. status, '', 'Prompt: ' .. prompt })
-		end,
-	})
+		end)
 end
 
 return M
