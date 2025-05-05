@@ -3,12 +3,12 @@
 -- License: Apache 2.0
 
 if vim.g.loaded_sketch_nvim == 1 then
-  return
+	return
 end
 vim.g.loaded_sketch_nvim = 1
 
 -- Define the Sketch command
 vim.api.nvim_create_user_command('Sketch', function(opts)
-  local sketch = require('sketch')
-  sketch.run_sketch(opts.args)
+	local sketch = require('sketch-nvim')
+	sketch.run_sketch(opts.args)
 end, { nargs = '+', desc = 'Run sketch with the given prompt' })
