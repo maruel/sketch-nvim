@@ -80,7 +80,9 @@ function M.run_sketch(prompt)
 		vim.api.nvim_win_set_buf(0, buf)
 	end
 
+	vim.api.nvim_set_option_value('modifiable', true, { buf = buf })
 	vim.api.nvim_buf_set_lines(buf, 0, -1, false, { 'Running sketch with prompt: ' .. prompt, '', 'Please wait...' })
+	vim.api.nvim_set_option_value('modifiable', false, { buf = buf })
 	local cmd = "sketch"
 	local args = { "-open=false", "-one-shot", "-prompt", prompt }
 
