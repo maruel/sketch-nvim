@@ -29,8 +29,6 @@ function M.run_sketch(prompt)
 		return
 	end
 
-	local cmd = string.format('sketch -open=false -one-shot -prompt %q', prompt)
-
 	-- Create a buffer for the output
 	local buf = vim.api.nvim_create_buf(false, true)
 	vim.api.nvim_set_option_value('buftype', 'nofile', { buf = buf })
@@ -42,26 +40,47 @@ function M.run_sketch(prompt)
 	vim.cmd('split')
 	vim.api.nvim_win_set_buf(0, buf)
 
-	-- Inform user that sketch is running
 	vim.api.nvim_buf_set_lines(buf, 0, -1, false, { 'Running sketch with prompt: ' .. prompt, '', 'Please wait...' })
 
-	-- Run the command and capture output
-	vim.fn.jobstart(cmd, {
-		stdout_buffered = true,
-		stderr_buffered = true,
-		on_stdout = function(_, data)
+	-- local cmd = string.format('sketch -open=false -one-shot -prompt %q', prompt)
+	-- vim.fn.jobstart(cmd, {
+	-- 	stdout_buffered = true,
+	-- 	stderr_buffered = true,
+	-- 	on_stdout = function(_, data)
+	-- 		if data then
+	-- 			vim.api.nvim_buf_set_lines(buf, 3, -1, false, data)
+	-- 		end
+	-- 	end,
+	-- 	on_stderr = function(_, data)
+	-- 		if data then
+	-- 			vim.api.nvim_buf_set_lines(buf, 3, -1, false, data)
+	-- 		end
+	-- 	end,
+	-- 	on_exit = function(_, code)
+	-- 		local status = code == 0 and 'SUCCESS' or 'FAILED (exit code: ' .. code .. ')'
+	-- 		vim.api.nvim_buf_set_lines(buf, 0, 2, false, { 'Sketch execution ' .. status, '', 'Prompt: ' .. prompt })
+	-- 	end,
+	-- })
+	--
+	local cmd = { "sketch", "-open=false", "-one-shot", "-prompt", prompt, }
+	vim.system(cmd, {
+		stdout = function(_, data)
 			if data then
-				vim.api.nvim_buf_set_lines(buf, 3, -1, false, data)
+				--vim.api.nvim_buf_set_lines(buf, 3, -1, false, data)
+				vim.api.nvim_buf_set_lines(buf, -1, -1, true, { data })
 			end
 		end,
 		on_stderr = function(_, data)
 			if data then
+				--vim.api.nvim_buf_set_lines(buf, 3, -1, false, data)
+				vim.api.nvim_buf_set_lines(buf, -1, -1, true, { data })
 				vim.api.nvim_buf_set_lines(buf, 3, -1, false, data)
 			end
 		end,
 		on_exit = function(_, code)
 			local status = code == 0 and 'SUCCESS' or 'FAILED (exit code: ' .. code .. ')'
-			vim.api.nvim_buf_set_lines(buf, 0, 2, false, { 'Sketch execution ' .. status, '', 'Prompt: ' .. prompt })
+			-- vim.api.nvim_buf_set_lines(buf, 0, 2, false, { 'Sketch execution ' .. status, '', 'Prompt: ' .. prompt })
+			vim.api.nvim_buf_set_lines(buf, -1, -1, true, { 'Sketch execution ' .. status, '', 'Prompt: ' .. prompt })
 		end,
 	})
 end
