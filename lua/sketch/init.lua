@@ -21,6 +21,7 @@ end
 local function append_text_to_buffer(buf, text)
 	if text then
 		local lines = vim.api.nvim_buf_get_lines(buf, 0, -1, false)
+		local new_lines = vim.split(text, '\n')
 		vim.api.nvim_buf_set_lines(buf, #lines, -1, false, lines)
 		vim.api.nvim_buf_set_lines(buf, -1, -1, false, { text })
 		--vim.api.nvim_buf_set_lines(buf, 3, -1, false, data)
@@ -51,27 +52,6 @@ function M.run_sketch(prompt)
 	vim.api.nvim_win_set_buf(0, buf)
 
 	vim.api.nvim_buf_set_lines(buf, 0, -1, false, { 'Running sketch with prompt: ' .. prompt, '', 'Please wait...' })
-
-	-- local cmd = string.format('sketch -open=false -one-shot -prompt %q', prompt)
-	-- vim.fn.jobstart(cmd, {
-	-- 	stdout_buffered = true,
-	-- 	stderr_buffered = true,
-	-- 	on_stdout = function(_, data)
-	-- 		if data then
-	-- 			vim.api.nvim_buf_set_lines(buf, 3, -1, false, data)
-	-- 		end
-	-- 	end,
-	-- 	on_stderr = function(_, data)
-	-- 		if data then
-	-- 			vim.api.nvim_buf_set_lines(buf, 3, -1, false, data)
-	-- 		end
-	-- 	end,
-	-- 	on_exit = function(_, code)
-	-- 		local status = code == 0 and 'SUCCESS' or 'FAILED (exit code: ' .. code .. ')'
-	-- 		vim.api.nvim_buf_set_lines(buf, 0, 2, false, { 'Sketch execution ' .. status, '', 'Prompt: ' .. prompt })
-	-- 	end,
-	-- })
-	--
 	local cmd = { "sketch", "-open=false", "-one-shot", "-prompt", prompt, }
 	vim.system(cmd, {
 			stdout = vim.schedule_wrap(function(_, data)
