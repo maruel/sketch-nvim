@@ -20,9 +20,9 @@ end
 
 local function append_text_to_buffer(buf, text)
 	if text then
-		local lines = vim.api.nvim_buf_get_lines(buf, 0, -1, false)
+		-- local lines = vim.api.nvim_buf_get_lines(buf, 0, -1, false)
 		local new_lines = vim.split(text, '\n')
-		vim.api.nvim_buf_set_lines(buf, #lines, -1, false, lines)
+		-- vim.api.nvim_buf_set_lines(buf, #lines, -1, false, lines)
 		vim.api.nvim_buf_set_lines(buf, -1, -1, false, new_lines)
 		--vim.api.nvim_buf_set_lines(buf, 3, -1, false, data)
 		-- vim.api.nvim_buf_set_lines(buf, -1, -1, true, { data })
