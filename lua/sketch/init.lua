@@ -27,6 +27,17 @@ local function append_text_to_buffer(buf, text)
 	end
 end
 
+-- Find a buffer by name if it exists
+local function find_buffer_by_name(name)
+	for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+		local buf_name = vim.api.nvim_buf_get_name(buf)
+		if buf_name:match(name .. '$') then
+			return buf
+		end
+	end
+	return nil
+end
+
 -- Execute sketch with the given prompt
 function M.run_sketch(prompt)
 	if not is_sketch_installed() then
@@ -38,16 +49,32 @@ function M.run_sketch(prompt)
 		return
 	end
 
-	-- Create a buffer for the output
-	local buf = vim.api.nvim_create_buf(false, true)
-	vim.api.nvim_set_option_value('buftype', 'nofile', { buf = buf })
-	vim.api.nvim_set_option_value('swapfile', false, { buf = buf })
-	vim.api.nvim_set_option_value('bufhidden', 'wipe', { buf = buf })
-	vim.api.nvim_buf_set_name(buf, 'sketch-output')
+	-- Find existing sketch-output buffer or create a new one
+	local buf = find_buffer_by_name('sketch-output')
+	if not buf then
+		buf = vim.api.nvim_create_buf(false, true)
+		vim.api.nvim_set_option_value('buftype', 'nofile', { buf = buf })
+		vim.api.nvim_set_option_value('swapfile', false, { buf = buf })
+		vim.api.nvim_set_option_value('bufhidden', 'wipe', { buf = buf })
+		vim.api.nvim_buf_set_name(buf, 'sketch-output')
+	else
+		vim.api.nvim_buf_set_lines(buf, 0, -1, false, {})
+	end
 
-	-- Display the buffer in a new split window
-	vim.cmd('split')
-	vim.api.nvim_win_set_buf(0, buf)
+	-- Display the buffer in a split window if not already visible
+	local found_window = false
+	for _, win in ipairs(vim.api.nvim_list_wins()) do
+		if vim.api.nvim_win_get_buf(win) == buf then
+			found_window = true
+			-- Focus the window
+			vim.api.nvim_set_current_win(win)
+			break
+		end
+	end
+	if not found_window then
+		vim.cmd('split')
+		vim.api.nvim_win_set_buf(0, buf)
+	end
 
 	vim.api.nvim_buf_set_lines(buf, 0, -1, false, { 'Running sketch with prompt: ' .. prompt, '', 'Please wait...' })
 	local cmd = "sketch"
