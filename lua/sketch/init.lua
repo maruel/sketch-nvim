@@ -50,19 +50,44 @@ function M.run_sketch(prompt)
 	vim.api.nvim_win_set_buf(0, buf)
 
 	vim.api.nvim_buf_set_lines(buf, 0, -1, false, { 'Running sketch with prompt: ' .. prompt, '', 'Please wait...' })
-	local cmd = { "sketch", "-open=false", "-one-shot", "-prompt", prompt, }
-	vim.system(cmd, {
-			stdout = vim.schedule_wrap(function(_, data)
+	local cmd = "sketch"
+	local args = { "-open=false", "-one-shot", "-prompt", prompt }
+
+	-- Create stdio handles
+	local stdout = vim.uv.new_pipe(false)
+	local stderr = vim.uv.new_pipe(false)
+	local handle
+	handle = vim.uv.spawn(cmd, {
+		args = args,
+		stdio = { nil, stdout, stderr }
+	}, vim.schedule_wrap(function(code, signal)
+		stdout:close()
+		stderr:close()
+		if handle then
+			handle:close()
+		end
+		local status = code == 0 and 'SUCCESS' or 'FAILED (exit code: ' .. code .. ')'
+		append_text_to_buffer(buf, 'Sketch execution ' .. status)
+	end))
+	stdout:read_start(vim.schedule_wrap(function(err, data)
+		if err then
+			append_text_to_buffer(buf, 'Error reading stdout: ' .. err)
+		else
+			if data then
 				append_text_to_buffer(buf, data)
-			end),
-			stderr = vim.schedule_wrap(function(_, data)
+			end
+		end
+	end))
+	stderr:read_start(vim.schedule_wrap(function(err, data)
+		if err then
+			append_text_to_buffer(buf, 'Error reading stderr: ' .. err)
+		else
+			if data then
 				append_text_to_buffer(buf, data)
-			end),
-		},
-		vim.schedule_wrap(function(out)
-			local status = out.code == 0 and 'SUCCESS' or 'FAILED (exit code: ' .. out.code .. ')'
-			append_text_to_buffer(buf, 'Sketch execution ' .. status)
-		end))
+			end
+		end
+	end))
 end
 
 return M
+
