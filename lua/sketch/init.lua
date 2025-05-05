@@ -61,10 +61,10 @@ function M.run_sketch(prompt)
 				append_text_to_buffer(buf, data)
 			end),
 		},
-		function(out)
+		vim.schedule_wrap(function(out)
 			local status = out.code == 0 and 'SUCCESS' or 'FAILED (exit code: ' .. out.code .. ')'
 			append_text_to_buffer(buf, 'Sketch execution ' .. status)
-		end)
+		end))
 end
 
 return M
