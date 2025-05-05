@@ -58,7 +58,6 @@ function M.run_sketch(prompt)
 	local stderr = vim.uv.new_pipe(false)
 	local handle
 	handle = vim.uv.spawn(cmd, {
-		pty = true,
 		args = args,
 		stdio = { nil, stdout, stderr }
 	}, vim.schedule_wrap(function(code, signal)
