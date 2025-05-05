@@ -15,6 +15,9 @@ local function is_sketch_installed()
 	return result ~= ''
 end
 
+function M.setup(opts)
+end
+
 -- Execute sketch with the given prompt
 function M.run_sketch(prompt)
 	if not is_sketch_installed() then
