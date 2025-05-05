@@ -36,11 +36,37 @@ end
 
 -- Find a buffer by name if it exists
 local function find_buffer_by_name(name)
+	-- First look for exact matches
 	for _, buf in ipairs(vim.api.nvim_list_bufs()) do
-		if vim.api.nvim_buf_get_name(buf) == name then
+		local buf_name = vim.api.nvim_buf_get_name(buf)
+		if buf_name == name then
 			return buf
 		end
 	end
+
+	-- If not found, look for buffers ending with the name
+	-- This handles special buffers in Neovim
+	for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+		-- Try using bufname() which gives the display name
+		local display_name = vim.fn.bufname(buf)
+		if display_name == name then
+			return buf
+		end
+
+		-- Try to match the end of the buffer name
+		-- This helps with finding buffers that might have a path prefix
+		local buf_name = vim.api.nvim_buf_get_name(buf)
+		if buf_name:match(name .. '$') then
+			return buf
+		end
+
+		-- Also check if the last part of a path matches
+		local basename = buf_name:match('([^/\\]+)$')
+		if basename and basename == name then
+			return buf
+		end
+	end
+
 	return nil
 end
 
@@ -58,6 +84,14 @@ function M.run_sketch(prompt)
 	-- Find existing sketch-output buffer or create a new one
 	local buf = find_buffer_by_name('sketch-output')
 	if not buf then
+		vim.notify('Creating new sketch-output buffer')
+		-- For debugging purposes, list all existing buffers
+		for _, b in ipairs(vim.api.nvim_list_bufs()) do
+			local name = vim.api.nvim_buf_get_name(b)
+			if name ~= '' then
+				vim.notify('Buffer ' .. b .. ': ' .. name)
+			end
+		end
 		buf = vim.api.nvim_create_buf(false, true)
 		vim.api.nvim_set_option_value('buftype', 'nofile', { buf = buf })
 		vim.api.nvim_set_option_value('swapfile', false, { buf = buf })
