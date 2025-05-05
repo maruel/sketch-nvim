@@ -23,15 +23,16 @@ local function append_text_to_buffer(buf, text)
 		-- Append the output at the end of the buffer.
 		-- TODO: If the buffer doesn't end with a new line, the last line is updated.
 		local new_lines = vim.split(text, '\n')
+		vim.api.nvim_set_option_value('modifiable', true, { buf = buf })
 		vim.api.nvim_buf_set_lines(buf, -1, -1, false, new_lines)
+		vim.api.nvim_set_option_value('modifiable', false, { buf = buf })
 	end
 end
 
 -- Find a buffer by name if it exists
 local function find_buffer_by_name(name)
 	for _, buf in ipairs(vim.api.nvim_list_bufs()) do
-		local buf_name = vim.api.nvim_buf_get_name(buf)
-		if buf_name:match(name .. '$') then
+		if vim.api.nvim_buf_get_name(buf) == name then
 			return buf
 		end
 	end
@@ -56,9 +57,12 @@ function M.run_sketch(prompt)
 		vim.api.nvim_set_option_value('buftype', 'nofile', { buf = buf })
 		vim.api.nvim_set_option_value('swapfile', false, { buf = buf })
 		vim.api.nvim_set_option_value('bufhidden', 'wipe', { buf = buf })
+		vim.api.nvim_set_option_value('modifiable', false, { buf = buf })
 		vim.api.nvim_buf_set_name(buf, 'sketch-output')
 	else
+		vim.api.nvim_set_option_value('modifiable', true, { buf = buf })
 		vim.api.nvim_buf_set_lines(buf, 0, -1, false, {})
+		vim.api.nvim_set_option_value('modifiable', false, { buf = buf })
 	end
 
 	-- Display the buffer in a split window if not already visible

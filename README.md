@@ -8,7 +8,7 @@ The plugin provides the command `:Sketch <your_prompt>` which calls `sketch -ope
 
 ### Requirements
 
-- Neovim 0.5.0 or newer
+- [Neovim](https://neovim.io) 0.10.0 or newer
 - [sketch.dev](http://sketch.dev) CLI tool installed
 
 ### Using LazyVim
