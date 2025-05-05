@@ -23,12 +23,15 @@ Requires:
 
 Using your favorite plugin manager:
 
-With packer.nvim: >
-    use 'maruel/sketch-nvim'
+With LazyVim: >
+    {
+      "maruel/sketch-nvim",
+      cmd = "Sketch",
+    }
 <
 
-With vim-plug: >
-    Plug 'maruel/sketch-nvim'
+Manual installation: >
+    git clone https://github.com/maruel/sketch-nvim.git ~/.local/share/nvim/site/pack/plugins/start/sketch-nvim
 <
 
 ==============================================================================
