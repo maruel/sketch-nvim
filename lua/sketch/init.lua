@@ -18,6 +18,16 @@ end
 function M.setup(opts)
 end
 
+local function append_text_to_buffer(buf, text)
+	if text then
+		local lines = vim.api.nvim_buf_get_lines(buf, 0, -1, false)
+		vim.api.nvim_buf_set_lines(buf, #lines, -1, false, lines)
+		vim.api.nvim_buf_set_lines(buf, -1, -1, false, { text })
+		--vim.api.nvim_buf_set_lines(buf, 3, -1, false, data)
+		-- vim.api.nvim_buf_set_lines(buf, -1, -1, true, { data })
+	end
+end
+
 -- Execute sketch with the given prompt
 function M.run_sketch(prompt)
 	if not is_sketch_installed() then
@@ -65,24 +75,15 @@ function M.run_sketch(prompt)
 	local cmd = { "sketch", "-open=false", "-one-shot", "-prompt", prompt, }
 	vim.system(cmd, {
 			stdout = vim.schedule_wrap(function(_, data)
-				if data then
-					--vim.api.nvim_buf_set_lines(buf, 3, -1, false, data)
-					vim.api.nvim_buf_set_lines(buf, -1, -1, true, { data })
-				end
+				append_text_to_buffer(buf, data)
 			end),
 			stderr = vim.schedule_wrap(function(_, data)
-				if data then
-					--vim.api.nvim_buf_set_lines(buf, 3, -1, false, data)
-					vim.api.nvim_buf_set_lines(buf, -1, -1, true, { data })
-					vim.api.nvim_buf_set_lines(buf, 3, -1, false, data)
-				end
+				append_text_to_buffer(buf, data)
 			end),
 		},
 		function(out)
-			local code = out.code
-			local status = code == 0 and 'SUCCESS' or 'FAILED (exit code: ' .. code .. ')'
-			-- vim.api.nvim_buf_set_lines(buf, 0, 2, false, { 'Sketch execution ' .. status, '', 'Prompt: ' .. prompt })
-			vim.api.nvim_buf_set_lines(buf, -1, -1, true, { 'Sketch execution ' .. status, '', 'Prompt: ' .. prompt })
+			local status = out.code == 0 and 'SUCCESS' or 'FAILED (exit code: ' .. out.code .. ')'
+			append_text_to_buffer(buf, 'Sketch execution ' .. status)
 		end)
 end
 
