@@ -26,6 +26,11 @@ local function append_text_to_buffer(buf, text)
 		vim.api.nvim_set_option_value('modifiable', true, { buf = buf })
 		vim.api.nvim_buf_set_lines(buf, -1, -1, false, new_lines)
 		vim.api.nvim_set_option_value('modifiable', false, { buf = buf })
+		local line_count = vim.api.nvim_buf_line_count(bufnr)
+		for _, win in ipairs(vim.fn.win_findbuf(bufnr)) do
+			-- Move cursor to the end and center the view
+			vim.api.nvim_win_set_cursor(win, { line_count, 0 })
+		end
 	end
 end
 
