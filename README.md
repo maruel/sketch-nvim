@@ -1,6 +1,6 @@
 # sketch-nvim
 
-Neovim LUA plugin to integrate [sketch.dev](http://sketch.dev).
+Neovim LUA plugin to integrate [sketch.dev](https://sketch.dev).
 
 The plugin provides the command `:Sketch <your_prompt>` which calls `sketch -open=false -one-shot -prompt <your_prompt>`
 
@@ -14,9 +14,10 @@ The plugin provides the command `:Sketch <your_prompt>` which calls `sketch -ope
 ### Using LazyVim
 
 ```lua
-{
+return {
   "maruel/sketch-nvim",
   cmd = "Sketch",
+  config = true,
 }
 ```
 
@@ -34,7 +35,8 @@ git clone https://github.com/maruel/sketch-nvim.git ~/.local/share/nvim/site/pac
 :Sketch Write a function that calculates the Fibonacci sequence
 ```
 
-This will execute the sketch command and display the results in a new buffer.
+This will execute the sketch command and display the results in a new buffer. A new local git branch starting
+with `sketch/` will contain the result.
 
 ## License
 
