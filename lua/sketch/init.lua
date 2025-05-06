@@ -86,12 +86,12 @@ function M.run_sketch(prompt)
 	if not buf then
 		vim.notify('Creating new sketch-output buffer')
 		-- For debugging purposes, list all existing buffers
-		for _, b in ipairs(vim.api.nvim_list_bufs()) do
-			local name = vim.api.nvim_buf_get_name(b)
-			if name ~= '' then
-				vim.notify('Buffer ' .. b .. ': ' .. name)
-			end
-		end
+		-- for _, b in ipairs(vim.api.nvim_list_bufs()) do
+		-- 	local name = vim.api.nvim_buf_get_name(b)
+		-- 	if name ~= '' then
+		-- 		vim.notify('Buffer ' .. b .. ': ' .. name)
+		-- 	end
+		-- end
 		buf = vim.api.nvim_create_buf(false, true)
 		vim.api.nvim_set_option_value('buftype', 'nofile', { buf = buf })
 		vim.api.nvim_set_option_value('swapfile', false, { buf = buf })
