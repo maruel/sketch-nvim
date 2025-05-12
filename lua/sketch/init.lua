@@ -84,7 +84,7 @@ function M.run_sketch(prompt)
 	-- Find existing sketch-output buffer or create a new one
 	local buf = find_buffer_by_name('sketch-output')
 	if not buf then
-		vim.notify('Creating new sketch-output buffer')
+		-- vim.notify('Creating new sketch-output buffer')
 		-- For debugging purposes, list all existing buffers
 		-- for _, b in ipairs(vim.api.nvim_list_bufs()) do
 		-- 	local name = vim.api.nvim_buf_get_name(b)
